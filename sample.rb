@@ -58,4 +58,4 @@ winners = []
   winners << tournament.results[:winner_3rd][:name]
 end
 
-p winners.group_by(&:itself).map{ |key, value| [key, value.count] }.to_h
+p winners.group_by(&:itself).map{ |key, value| [key, value.count] }.sort_by { |_, v| -v }.to_h
