@@ -20,6 +20,42 @@ def battle(player1, player2)
   end
 end
 
-10.times {
-  p battle(players[0], players[1])
-}
+class Tournament
+  attr_reader :results
+
+  def initialize players
+    @players = players.shuffle
+    @results = {}
+  end
+
+  def perform_tournament
+    winners_1st = [
+      battle(@players[0], @players[1]),
+      battle(@players[2], @players[3]),
+      battle(@players[4], @players[5]),
+      battle(@players[6], @players[7]),
+    ]
+    @results[:winners_1st] = winners_1st
+
+    winners_2nd = [
+      battle(winners_1st[0], winners_1st[1]),
+      battle(winners_1st[2], winners_1st[3]),
+    ]
+    @results[:winners_2nd] = winners_2nd
+
+    winner_3rd = battle(winners_2nd[0], winners_1st[1])
+    @results[:winner_3rd] = winner_3rd
+  end
+end
+
+winners = []
+
+10000.times do
+  tournament = Tournament.new(players)
+  tournament.perform_tournament
+  # puts "優勝者: #{tournament.results[:winner_3rd][:name]}"
+
+  winners << tournament.results[:winner_3rd][:name]
+end
+
+p winners.group_by(&:itself).map{ |key, value| [key, value.count] }.sort_by { |_, v| -v }.to_h
